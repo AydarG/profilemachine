@@ -84,7 +84,7 @@ void setup()
   delay(1000);                   
    
   lcd.setCursor(0, 1);
-  lcd.print("TOTAL");
+  lcd.print("TOTAL ");
  
   Serial.begin(9600);
  
