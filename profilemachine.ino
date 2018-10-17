@@ -73,7 +73,7 @@ const int TIME_HEAT = 2000;                        // время нагрева
 const int TIME_HEAT_ADDITIONAL = 500;              // время нагрева дополнительно
 const int TIME_SAW_RETURN = 500;
 
-int tim = 100; // задержка между командами на цилиндры пневмомотора                                                   ОТЛАДИТЬ
+int tim = 200; // задержка между командами на цилиндры пневмомотора                                                   ОТЛАДИТЬ
 int tim1 = tim / 2;
 int tim2 = tim / 4;
 volatile int state = STATE_WAIT_START; // первоначальный статус оборудования
@@ -138,7 +138,7 @@ void loop()
     state = STATE_MOTOR;
     break;
   case STATE_MOTOR:
-    sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN2, motors[motorPhase]); // отображаются команды, которые поступают на пять пневмоклапанов мотора,
+    startMotor(motorPhase); // отображаются команды, которые поступают на пять пневмоклапанов мотора,
                                                                 // включая одновременно то два, то три клапана с  переменной задержкой tim3
                                                                 // в массиве sigments видно, что каждому состоянию j соответствует или 2 или 3 включенных клапана
     delay(motorPhase % 2 == 0 ? tim1 : tim2);
@@ -270,6 +270,12 @@ void useInstrument(int instrumentIndex)
   Serial.print("Используем инстументы в комбинации: ");
   Serial.println(instrumentIndex);
   sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN1, instrumentIndex);
+}
+
+void startMotor(int motorPhase){
+  sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN2, motors[motorPhase]);
+  digitalWrite(PIN_DRIVE, HIGH);
+  digitalWrite(PIN_STOP, LOW);
 }
 
 void stopMotor()
