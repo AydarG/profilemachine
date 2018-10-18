@@ -71,7 +71,7 @@ const int PRESS_TIME = 100;                        // время за котор
 const int SAW_TIME = 1500;                         // время отпила                                         отладить на станке
 const int TIME_HEAT = 2000;                        // время нагрева
 const int TIME_HEAT_ADDITIONAL = 500;              // время нагрева дополнительно
-const int TIME_SAW_RETURN = 500;
+const int TIME_SAW_RETURN = 500;                   // время возврата пилы в исходное состояние или до момента освобождения канала от полотны пилы
 
 int tim = 200; // задержка между командами на цилиндры пневмомотора                                                   ОТЛАДИТЬ
 int tim1 = tim / 2;
@@ -267,27 +267,27 @@ void sdvig(int output1, int output2, int output3, byte bits)
   digitalWrite(output3, HIGH);
 }
 
-void useInstrument(int instrumentIndex)
+void useInstrument(int instrumentIndex)                       // функция, отвечающая за комбинацию используемых инструментов в одном цикле
 {
   Serial.print("Используем инстументы в комбинации: ");
   Serial.println(instrumentIndex);
   sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN1, instrumentIndex);
 }
 
-void startMotor(int motorPhase){
+void startMotor(int motorPhase){                              // функция, отвечающая за подключение клапанов мотора
   sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN2, motors[motorPhase]);
   digitalWrite(PIN_DRIVE, HIGH);
   digitalWrite(PIN_STOP, LOW);
 }
 
-void stopMotor()
+void stopMotor()                                                // функция обездвижующая мотор
 {
   sdvig(DATA_PIN, CLOCK_PIN, LATCH_PIN2, stopMotorBits);
   digitalWrite(PIN_DRIVE, LOW);
   digitalWrite(PIN_STOP, HIGH);
 }
 
-void interrupt()
+void interrupt()                                                // функция внешнего прерывания от концевых индуктивных датчиков
 {
   if (state != STATE_MOTOR)
     return;
@@ -306,7 +306,7 @@ void interrupt()
   }
 }
 
-void interruptMiddle()
+void interruptMiddle()                                            // функция внешнего прерывания от среднего индуктивного датчика
 {
   if (state != STATE_MOTOR)
     return;
