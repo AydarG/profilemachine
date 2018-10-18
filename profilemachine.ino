@@ -178,10 +178,10 @@ void loop()
     break;
   case STATE_CASE5: //статус-зажим изделия А
     useInstrument(5);
-    Serial.println("Зажим изделия А");
+    Serial.println("Зажим второго изделия");
     delay(200);       // время отладить
     useInstrument(6); // сдвиг профиля А
-    Serial.println("Сдвиг изделия А");
+    Serial.println("Сдвиг изделия");
     delay(200);       // время  НАСТРОИТЬ
     useInstrument(7); // пила2
     Serial.println("Пила 2");
@@ -193,14 +193,15 @@ void loop()
     Serial.println("Все свободно");
     delay(PRESS_TIME);
     Serial.print("ОБРАБОТКА ДЕТАЛИ ");
-    Serial.print(count + 1);
+    Serial.print(count);
     Serial.println(" ЗАВЕРШЕНА");
-    Serial.print("Total  ");
-    Serial.println(total);
+    
 
     count++; //               изделие изготовлено, увеличиваем счетчик
     total++; //               общее количество изделий
     // Устанавливаем курсор на вторую строку и нулевой символ.
+    Serial.print("Total  ");
+    Serial.println(total);
     lcd.setCursor(11, 1);
     // Выводим на экран общее количество произведенных изделий
     lcd.print(total);
@@ -226,12 +227,13 @@ void loop()
 
 // функция которая определяет следующее состояние в зависимости от номера изделия
 int getNextState(int count)
-{ //
+{ 
+  Serial.print("Выбираем состояние count = "); Serial.println(count);
   if (count == 0)
   {
     return STATE_CASE2;
   }
-  if (count < MAX_COUNT + 1)
+  if (count < MAX_COUNT)
   {
     return STATE_CASE3;
   }
@@ -308,7 +310,9 @@ void interruptMiddle()
 {
   if (state != STATE_MOTOR)
     return;
-  if (count == 9)
+  Serial.print("Middle pressed. Count: ");
+  Serial.println(count);
+  if (count == MAX_COUNT + 1 && moveRight)
   {
     stopMotor();
     count = 0;
